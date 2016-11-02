@@ -54,11 +54,12 @@ response = urllib2.urlopen(req)
 contents = response.read()
 
 # Verify the contents
-if "My courses" not in contents:
+if "Mis cursos" not in contents:
+    #print contents
     print "Cannot connect to moodle"
     exit(1)
 
-courses = contents.split("<h2>My courses</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
+courses = contents.split("<h2>Mis cursos</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
 
 regex = re.compile('<h3 class="coursename">(.*?)</h3>')
 course_list = regex.findall(courses)
@@ -87,7 +88,7 @@ for course in courses:
         # Checking only resources... Ignoring forum and folders, etc
         if "resource" in href:
             cj1 = cookielib.CookieJar()
-            opener1 = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj1))
+            opener1 = urllib2.build_opener(urllib2.HTTPSHandler(context=ctx),urllib2.HTTPCookieProcessor(cj1))
 
             # Add our headers
             opener1.addheaders = [('User-agent', 'Moodle-Crawler')]
