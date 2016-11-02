@@ -29,7 +29,6 @@ if insecure_ssl == "enabled":
 
 # Store the cookies and create an opener that will hold them
 cj = cookielib.CookieJar()
-#opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 opener = urllib2.build_opener(urllib2.HTTPSHandler(context=ctx), urllib2.HTTPCookieProcessor(cj))
 
 # Add our headers
