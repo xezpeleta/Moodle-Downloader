@@ -4,6 +4,7 @@ import urllib
 import os
 import os.path
 import re
+import ssl
 
 from ConfigParser import ConfigParser
 
@@ -18,9 +19,15 @@ username = conf.get("auth", "username")
 password = conf.get("auth", "password")
 authentication_url = conf.get("auth", "url")
 
+# Optional: ignore incorrect SSL certificates
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
 # Store the cookies and create an opener that will hold them
 cj = cookielib.CookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+#opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+opener = urllib2.build_opener(urllib2.HTTPSHandler(context=ctx), urllib2.HTTPCookieProcessor(cj))
 
 # Add our headers
 opener.addheaders = [('User-agent', 'Moodle-Crawler')]
