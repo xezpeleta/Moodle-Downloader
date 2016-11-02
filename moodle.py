@@ -57,12 +57,11 @@ response = urllib2.urlopen(req)
 contents = response.read()
 
 # Verify the contents
-if "Mis cursos" not in contents:
-    #print contents
+if "My courses" not in contents:
     print "Cannot connect to moodle"
     exit(1)
 
-courses = contents.split("<h2>Mis cursos</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
+courses = contents.split("<h2>My courses</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
 
 regex = re.compile('<h3 class="coursename">(.*?)</h3>')
 course_list = regex.findall(courses)
