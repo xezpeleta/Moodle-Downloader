@@ -18,11 +18,14 @@ root_directory = conf.get("dirs", "root_dir")
 username = conf.get("auth", "username")
 password = conf.get("auth", "password")
 authentication_url = conf.get("auth", "url")
+insecure_ssl = conf.has_option("options", "insecure_ssl") and conf.get("options", "insecure_ssl") or "disabled";
 
-# Optional: ignore incorrect SSL certificates
 ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
+# Ignore incorrect SSL certificates
+if insecure_ssl == "enabled":
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    print "Insecure SSL mode enabled: we will not check the certificates"
 
 # Store the cookies and create an opener that will hold them
 cj = cookielib.CookieJar()
