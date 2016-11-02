@@ -19,6 +19,7 @@ username = conf.get("auth", "username")
 password = conf.get("auth", "password")
 authentication_url = conf.get("auth", "url")
 insecure_ssl = conf.has_option("options", "insecure_ssl") and conf.get("options", "insecure_ssl") or "disabled";
+my_courses = conf.has_option("options", "my_courses") and conf.get("options", "my_courses") or "My courses";
 
 ctx = ssl.create_default_context()
 # Ignore incorrect SSL certificates
@@ -57,11 +58,11 @@ response = urllib2.urlopen(req)
 contents = response.read()
 
 # Verify the contents
-if "My courses" not in contents:
+if my_courses not in contents:
     print "Cannot connect to moodle"
     exit(1)
 
-courses = contents.split("<h2>My courses</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
+courses = contents.split("<h2>" + my_courses + "</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
 
 regex = re.compile('<h3 class="coursename">(.*?)</h3>')
 course_list = regex.findall(courses)
