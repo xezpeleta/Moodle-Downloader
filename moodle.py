@@ -17,6 +17,7 @@ root_directory = conf.get("dirs", "root_dir")
 username = conf.get("auth", "username")
 password = conf.get("auth", "password")
 authentication_url = conf.get("auth", "url")
+my_courses = conf.has_option("options", "my_courses") and conf.get("options", "my_courses") or "My courses";
 
 # Store the cookies and create an opener that will hold them
 cj = cookielib.CookieJar()
@@ -47,11 +48,11 @@ response = urllib2.urlopen(req)
 contents = response.read()
 
 # Verify the contents
-if "My courses" not in contents:
+if my_courses not in contents:
     print "Cannot connect to moodle"
     exit(1)
 
-courses = contents.split("<h2>My courses</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
+courses = contents.split("<h2>" + my_courses + "</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
 
 regex = re.compile('<h3 class="coursename">(.*?)</h3>')
 course_list = regex.findall(courses)
