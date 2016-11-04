@@ -4,6 +4,7 @@ import urllib
 import os
 import os.path
 import re
+import ssl
 
 from ConfigParser import ConfigParser
 
@@ -17,10 +18,18 @@ root_directory = conf.get("dirs", "root_dir")
 username = conf.get("auth", "username")
 password = conf.get("auth", "password")
 authentication_url = conf.get("auth", "url")
+insecure_ssl = conf.has_option("options", "insecure_ssl") and conf.get("options", "insecure_ssl") or "disabled";
+
+ctx = ssl.create_default_context()
+# Ignore incorrect SSL certificates
+if insecure_ssl == "enabled":
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    print "Insecure SSL mode enabled: we will not check the certificates"
 
 # Store the cookies and create an opener that will hold them
 cj = cookielib.CookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+opener = urllib2.build_opener(urllib2.HTTPSHandler(context=ctx), urllib2.HTTPCookieProcessor(cj))
 
 # Add our headers
 opener.addheaders = [('User-agent', 'Moodle-Crawler')]
@@ -80,7 +89,7 @@ for course in courses:
         # Checking only resources... Ignoring forum and folders, etc
         if "resource" in href:
             cj1 = cookielib.CookieJar()
-            opener1 = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj1))
+            opener1 = urllib2.build_opener(urllib2.HTTPSHandler(context=ctx),urllib2.HTTPCookieProcessor(cj1))
 
             # Add our headers
             opener1.addheaders = [('User-agent', 'Moodle-Crawler')]
