@@ -4,6 +4,7 @@ import urllib
 import os
 import os.path
 import re
+import ssl
 
 from ConfigParser import ConfigParser
 
