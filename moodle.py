@@ -63,12 +63,12 @@ if my_courses not in contents:
 
 courses = contents.split("<h2>" + my_courses + "</h2>")[1].split('<aside id="block-region-side-pre" ')[0]
 
-regex = re.compile('<h3 class="coursename">(.*?)</h3>')
+regex = re.compile('<div class="name">(.*?)</div>')
 course_list = regex.findall(courses)
 courses = []
 
 for course_string in course_list:
-    soup = BeautifulSoup(course_string)
+    soup = BeautifulSoup(course_string, 'lxml')
     a = soup.find('a')
     course_name = a.text
     course_link = a.get('href')
@@ -79,7 +79,7 @@ for course in courses:
         os.mkdir(root_directory+course[0])
     response1 = urllib2.urlopen(course[1])
     scrap = response1.read()
-    soup = BeautifulSoup(scrap)
+    soup = BeautifulSoup(scrap, 'lxml')
 
     course_links = soup.find(class_="course-content").find(class_="weeks").find_all('a')
 
